@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HostelFind Prototype</title>
+<style>
+:root{--dk:#14532D;--mid:#1F6B3A;--sage:#E3EBDF;--amb:#F2B134;--ink:#1F2A24;--mut:#5F6B63;--line:#CBD8CD;--bg:#F4F7F3;--warn:#8A5A00;--warnbg:#FFF4D6}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#dfe7de}
+.app{max-width:440px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;display:flex;flex-direction:column;box-shadow:0 0 30px rgba(0,0,0,.12)}
+header{background:var(--dk);color:#fff;padding:14px 16px 12px}header .row{display:flex;align-items:center;gap:10px}
+.logo{width:34px;height:34px}header h1{font-size:20px;margin:0}header h1 span{color:var(--amb)}header p{margin:2px 0 0;font-size:12.5px;color:#D8E8DB}
+.banner{background:var(--warnbg);color:var(--warn);font-size:12px;padding:8px 14px;border-bottom:1px solid #ecd9a2;line-height:1.35}
+main{flex:1;padding:12px 14px 86px}
+.search{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font-size:15px;background:#fff}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.chip{border:1.5px solid var(--mid);color:var(--mid);background:#fff;border-radius:20px;padding:6px 11px;font-size:13px;cursor:pointer}
+.chip.on{background:var(--mid);color:#fff}
+.lbl{font-size:12px;color:var(--mut);margin:8px 0 2px;display:flex;justify-content:space-between}
+input[type=range]{width:100%;accent-color:var(--mid)}
+select{padding:8px;border-radius:10px;border:1.5px solid var(--line);background:#fff;font-size:13px}
+.count{font-size:13px;color:var(--mut);margin:10px 0 6px;display:flex;justify-content:space-between;align-items:center}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+.card h3{margin:0;font-size:16px;color:var(--dk)}.meta{font-size:13px;color:var(--mut);margin-top:2px}
+.price{font-size:15px;margin-top:6px}.price b{color:var(--dk)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.tag{font-size:11.5px;padding:2px 8px;border-radius:10px;background:var(--sage);color:var(--dk);font-weight:600}
+.tag.warn{background:var(--warnbg);color:var(--warn)}.tag.ok{background:var(--dk);color:#fff}
+.actions{display:flex;gap:8px;margin-top:10px}
+.btn{flex:1;border:0;border-radius:10px;padding:10px;font-size:14px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;display:block}
+.btn.p{background:var(--mid);color:#fff}.btn.o{background:#fff;color:var(--mid);border:1.5px solid var(--mid)}.btn.a{background:var(--amb);color:var(--ink)}
+.btn:disabled{opacity:.45}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;display:flex;background:#fff;border-top:1px solid var(--line)}
+nav button{flex:1;border:0;background:none;padding:10px 4px 12px;font-size:12.5px;color:var(--mut);cursor:pointer}
+nav button.on{color:var(--dk);font-weight:800;border-top:3px solid var(--amb);padding-top:7px}
+table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border-radius:10px;overflow:hidden}
+th,td{border:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}th{background:var(--sage);color:var(--dk)}
+.back{background:none;border:0;color:var(--mid);font-weight:700;font-size:14px;padding:4px 0 10px;cursor:pointer}
+h2{font-size:18px;color:var(--dk);margin:4px 0 8px}.small{font-size:12px;color:var(--mut);line-height:1.4}
+.box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0}
+.step{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--sage)}.step:last-child{border:0}
+.step .c{display:flex;align-items:center;gap:10px}.step .c button{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--mid);background:#fff;font-size:18px;color:var(--mid);cursor:pointer}
+.sw{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
+.empty{text-align:center;color:var(--mut);padding:30px 10px;font-size:14px}
+.foot{font-size:11.5px;color:var(--mut);text-align:center;margin:14px 0 0;line-height:1.4}
+.mk{display:none;background:var(--amb);color:var(--ink);font-size:10.5px;font-weight:800;border-radius:10px;padding:1px 6px;margin-left:6px;vertical-align:middle}
+.showmk .mk{display:inline-block}
+.gal{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:60px 60px 60px;gap:6px;margin:6px 0}
+.gal div{background:#E8ECE7;border:1.5px dashed #9BAA9F;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:var(--mut);text-align:center;padding:2px}
+.gal .g1{grid-row:1/4}
+.rl{background:none;border:0;color:var(--mid);text-decoration:underline;font-size:13px;cursor:pointer;padding:6px 0}
+.legend{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--mut);background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 10px;margin-bottom:10px}
+.toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:var(--dk);color:#fff;padding:10px 14px;border-radius:10px;font-size:13px;max-width:380px;z-index:9}
+input.num{width:96px;padding:6px;border:1.5px solid var(--line);border-radius:8px;font-size:13px}
+</style></head><body>
+<div class="app showmk" id="app">
+<header><div class="row"><svg class="logo" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#fff"/><path d="M24 47 L50 25 L76 47 V76 H24 Z" fill="none" stroke="#14532D" stroke-width="6" stroke-linejoin="round"/><path d="M38 55 L47 64 L63 46" fill="none" stroke="#F2B134" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg><div><h1>Hostel<span>Find</span></h1><p>Find a room you can trust. Prototype.</p></div></div></header>
+<div class="banner"><b>Prototype.</b> Hostel details come from a student-compiled list dated 24 July 2024. HostelFind has not visited or verified them, and prices may have changed. Confirm with the manager before paying.</div>
+<main id="main"></main>
+<nav><button id="t-search" class="on" onclick="go('search')">Search</button><button id="t-compare" onclick="go('compare')">Compare (<span id="cc">0</span>)</button><button id="t-manager" onclick="go('manager')">Manager</button></nav>
+</div>
+<script>
+// Source: "Hostels around Makerere University as per 24 July 2024" compiled by Bumba Erinest, Chairperson, Students Liberation Front.
+// Each room: [label as written, type S/D/T/O, self-contained 1/0/null, [prices in UGX]]
+const SRC="Students Liberation Front list, 24 July 2024 (compiled by Bumba Erinest)";
+const H=[
+{n:1,name:"Muhika Hostel",area:"Kikoni",rooms:[["Double (shared) room","D",null,[650000]],["Single room (not self-contained)","S",0,[1000000]],["Single room (self-contained)","S",1,[1200000]],["Single room (sliding door)","S",null,[1300000]],["Single room, extension building","S",null,[1000000]]],tel:["0780562202"]},
+{n:2,name:"Akwata Empola",area:"Kikoni",rooms:[["Single room (not self-contained)","S",0,[900000]]],tel:["0704578111"]},
+{n:3,name:"Apex Girls' Hostel",area:"Kikoni",rooms:[["Single room (not self-contained)","S",0,[900000]],["Double (shared) room","D",null,[600000]]],tel:["0755396745"]},
+{n:4,name:"Mwesigwa Hostel",area:"Kikoni",rooms:[["Single small (all self-contained)","S",1,[1500000]],["Single big (all self-contained)","S",1,[2000000]],["Doubles (all self-contained)","D",1,[1300000]]],tel:["0782542397"]},
+{n:5,name:"Olympia Hostel",area:"Kikoni",rooms:[["Double/shared room (all self-contained)","D",1,[1300000]],["Single (all self-contained)","S",1,[1900000]],["Double single: double room, one occupant (self-contained)","S",1,[2600000]]],tel:["0780842953"]},
+{n:6,name:"Garden Courts Girls' Hostel",area:"Kikoni",rooms:[["Single room (all self-contained)","S",1,[1300000,1500000]],["Double room (all self-contained)","D",1,[800000,750000]]],tel:["0782000544"],note:"Source lists two prices for each room type without saying why."},
+{n:7,name:"Nalika Hostel",area:"Kikoni",rooms:[["Double room","D",null,[600000]]],tel:["0776994973"]},
+{n:8,name:"Lyn Modern Hostel",area:"Kikoni",rooms:[["Single room (not self-contained)","S",0,[800000]],["Double room (not self-contained)","D",0,[600000]]],tel:["0782647707"]},
+{n:9,name:"Muhika Hostel (second entry)",area:"Kikoni",rooms:[["Double (shared) room","D",null,[650000]],["Single room (not self-contained)","S",0,[1000000]],["Single room (self-contained)","S",1,[1200000]],["Single room (sliding door)","S",null,[1300000]],["Single room, extension building","S",null,[1000000]]],tel:["0780562202"],note:"Appears twice in the source with identical details."},
+{n:10,name:"Douglas Villa Hostel",area:"Kikoni",rooms:[["Double (shared) room","D",null,[650000]],["Single room (not self-contained)","S",0,[1000000]],["Single room (self-contained)","S",1,[1200000]],["Single room (sliding door)","S",null,[1300000]],["Single room, extension building","S",null,[1000000]]],tel:["0780562202"],note:"Same details and contact as Muhika Hostel in the source."},
+{n:11,name:"Castle Ville Hostel",area:"Kikoni",rooms:[["Double room (self-contained)","D",1,[800000]],["Single room (self-contained)","S",1,[1300000]],["Single room (not self-contained)","S",0,[700000]]],tel:["0782206832","0700206832"]},
+{n:12,name:"Nakiyingi Hostel",area:"Kikoni",rooms:[["Double (self-contained)","D",1,[1000000]],["Double (not self-contained)","D",0,[750000]],["Room type not labelled in source","O",null,[800000]],["Single self-contained, big","S",1,[1600000]],["Single self-contained, small","S",1,[1300000]]],tel:["0782473376"]},
+{n:13,name:"Prince Hostel",area:"Kikoni",rooms:[["Single room (self-contained)","S",1,[1000000]],["Single (not self-contained)","S",0,[850000]],["Double","D",null,[600000]]],tel:[],note:"No contact given in the source."},
+{n:14,name:"Frama Hostel",area:"Kikoni",rooms:[["Double room","D",null,[600000]],["Single room (self-contained)","S",1,[1200000]],["Single (not self-contained)","S",0,[850000]]],tel:["0757517299","0780810022"]},
+{n:15,name:"Edith Hetty",area:"Kikoni",rooms:[["Single room","S",null,[1100000]],["Double room","D",null,[650000,700000,750000]]],tel:["0779397186"]},
+{n:16,name:"Baskon Hostel",area:"Kikoni",rooms:[["Single","S",null,[750000]],["Double","D",null,[500000]]],tel:["0704509313"]},
+{n:17,name:"Kare Hostel",area:"Kikoni",rooms:[["Double room","D",null,[600000]],["Single room","S",null,[750000]],["Self-contained, small","O",1,[900000]],["Self-contained, big","O",1,[1000000]]],tel:["0702470909","0782470909"],note:"The source also shows an unclear price written \"80,0000\", left out here."},
+{n:18,name:"Jessam Hostel",area:"Kikoni",rooms:[["Single room (self-contained)","S",1,[1200000]],["Double (self-contained)","D",1,[900000]]],tel:["0783193518"]},
+{n:19,name:"Helican Hostel",area:"Kikumi Kikumi",rooms:[["Single room (self-contained)","S",1,[1300000]],["Double room","D",null,[650000]]],tel:["0771834668"]},
+{n:20,name:"Jerusalam",area:"Wandegeya",rooms:[["Double room","D",null,[650000,1000000]],["Single room","S",null,[1000000,1300000]]],tel:["0779397186"]},
+{n:21,name:"Sunways Hostel",area:"Kikoni",rooms:[["Double (all self-contained)","D",1,[800000]],["Single (all self-contained)","S",1,[1200000,1400000]]],tel:["0785534364"]},
+{n:22,name:"Sharks Hostel",area:"Kikoni",rooms:[["Single","S",null,[750000]],["Double","D",null,[600000]],["Triple","T",null,[450000]]],tel:["9782327143"],note:"Contact is written \"9782327143\" in the source and may be a typo."},
+{n:23,name:"Wavney Courts",area:"Kikoni",rooms:[["Double room","D",null,[600000]],["Single room (not self-contained)","S",0,[800000]],["Single room (self-contained)","S",1,[1000000]]],tel:["0777041899"]},
+{n:24,name:"Dream World Hostel",area:"Kikoni",rooms:[["Double room","D",null,[600000]],["Single room (self-contained)","S",1,[1200000]]],tel:["0758501330"]},
+{n:25,name:"Aryan Hostel",area:"Wandegeya",rooms:[["Double rooms","D",null,[550000]],["Single rooms","S",null,[750000]]],tel:["0788949213"]},
+{n:26,name:"Lady Julianna Girls' Hostel",area:"Wandegeya",rooms:[["Double room","D",null,[750000]],["Single room","S",null,[1000000]]],tel:["0701721698"]},
+{n:27,name:"New Nana Hostel",area:"Not stated",rooms:[["Single room (self-contained)","S",1,[1800000]],["Double room","D",null,[950000]],["Triple room","T",null,[750000]]],tel:["0776088087","0701117094"]},
+{n:29,name:"Cheds Hostel",area:"Kikumi Kikumi",rooms:[["Double with balcony","D",null,[600000]],["Double without balcony","D",null,[530000]],["Triple without balcony","T",null,[470000]]],tel:["0787990186"]},
+{n:30,name:"Kann Hostel",area:"Kikoni",rooms:[["Single room (self-contained)","S",1,[1050000,1100000]],["Double room","D",null,[600000,700000]]],tel:["0700800241"]},
+{n:31,name:"Makerere International Students Hostel (MISH)",area:"Kikoni",rooms:[["Single room","S",null,[1000000]],["Double room","D",null,[600000]]],tel:["0751366240"]},
+{n:32,name:"Clibas Hostel",area:"Kikoni",rooms:[["Double room","D",null,[520000,600000]],["Single room","S",null,[800000,1000000,1200000]]],tel:["0781917245"]},
+{n:33,name:"Panicol Hostel",area:"Wandegeya",rooms:[["Single room","S",null,[2000000]],["Double room","D",null,[1000000]]],tel:["0701529927"]},
+{n:34,name:"JJ Hostel",area:"Kikoni",rooms:[["Double room (self-contained)","D",1,[1000000]],["Single room (self-contained)","S",1,[2000000]]],tel:["0392964436"]},
+{n:35,name:"Messiah Hostel",area:"Kikumi Kikumi",rooms:[["Double room","D",null,[600000]],["Single room","S",null,[800000]]],tel:["0772456412"]},
+{n:36,name:"Paramount Hostel",area:"Wandegeya",rooms:[["Double room","D",null,[750000]],["Single room","S",null,[1200000]]],tel:["0782972497"]},
+{n:37,name:"El-S Hadai Hostel",area:"Kikumi Kikumi",rooms:[["Double room","D",null,[550000]],["Single room","S",null,[750000]]],tel:["0754943057"]},
+{n:38,name:"Felamor Girls Hostel",area:"Kikumi Kikumi",rooms:[["Double room","D",null,[500000]],["Triple room","T",null,[450000]]],tel:["0702548193"]},
+{n:39,name:"Braetd Girls Hostel",area:"Kikumi Kikumi",rooms:[["Single room","S",null,[1800000]],["Double room","D",null,[1000000]]],tel:["0701183722"]},
+{n:40,name:"God Is Able Hostel",area:"Kikumi Kikumi",rooms:[["Single room","S",null,[900000,1200000]],["Double room","D",null,[600000,750000]],["Triple room","T",null,[450000,500000]]],tel:["0772434755"]},
+{n:41,name:"Bira Girls' Hostel",area:"Kikoni",rooms:[["Double room","D",null,[500000]],["Single room","S",null,[900000]]],tel:["0775434695"]},
+{n:42,name:"Sami Hostel",area:"LDC",rooms:[["Double room","D",null,[570000]],["Single room","S",null,[770000]],["Triple","T",null,[470000]]],tel:["0777530229"]}
+];
+
+const fmt=n=>'UGX '+n.toLocaleString('en-US');
+const TN={S:'Single',D:'Double',T:'Triple'};
+const state={mk:true,room:{},tab:'search',q:'',area:'All',type:'Any',self:false,girls:false,max:2600000,sort:'price',open:null,cmp:[],mgr:{sel:H[0].n,conf:{}}};
+H.forEach(h=>{h.all=h.rooms.flatMap(r=>r[3]);h.min=Math.min(...h.all);h.girls=/girl/i.test(h.name);h.hasSelf=h.rooms.some(r=>r[2]===1)});
+const minOf=(h,t)=>{const p=h.rooms.filter(r=>t==='Any'?true:r[1]===t).flatMap(r=>r[3]);return p.length?Math.min(...p):null};
+function wa(n){return /^0[67]\d{8}$/.test(n)?'256'+n.slice(1):null}
+function fil(){const q=state.q.trim().toLowerCase();let L=H.filter(h=>{
+ if(q&&!(h.name+' '+h.area).toLowerCase().includes(q))return false;
+ if(state.area!=='All'&&h.area!==state.area)return false;
+ if(state.girls&&!h.girls)return false;
+ const rs=h.rooms.filter(r=>(state.type==='Any'||r[1]===state.type)&&(!state.self||r[2]===1));
+ if(!rs.length)return false;
+ return Math.min(...rs.flatMap(r=>r[3]))<=state.max});
+ L.sort((a,b)=>state.sort==='price'?a.min-b.min:a.name.localeCompare(b.name));return L}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function chip(label,on,fn){return `<span class="chip ${on?'on':''}" onclick="${fn}">${esc(label)}</span>`}
+function card(h){const c=state.mgr.conf[h.n];const sh=state.cmp.includes(h.n);
+ const fp=state.type==='Any'?h.min:minOf(h,state.type);
+ return `<div class="card"><h3>${esc(h.name)}</h3><div class="meta">${esc(h.area)} · ${h.rooms.length} room options</div>
+ <div class="price">From <b>${fmt(fp)}</b> per semester <span class="small">(as listed)</span></div>
+ <div class="tags"><span class="tag warn">Not verified yet</span>${h.hasSelf?'<span class="tag">Self-contained option</span>':''}${h.girls?'<span class="tag">Girls\' hostel</span>':''}${c?'<span class="tag ok">Vacancy confirmed today (demo)</span>':''}</div>
+ <div class="actions"><button class="btn p" onclick="show(${h.n})">View details</button><button class="btn o" onclick="tog(${h.n})">${sh?'Remove from compare':'Compare'}</button></div></div>`}
+function search(){const L=fil();return `<input class="search" placeholder="Search name or area, e.g. Kikoni" value="${esc(state.q)}" oninput="state.q=this.value;draw(true)">
+ <div class="lbl"><span>Area</span></div><div class="chips">${['All','Kikoni','Kikumi Kikumi','Wandegeya','LDC'].map(a=>chip(a,state.area===a,`state.area='${a}';draw()`)).join('')}</div>
+ <div class="lbl"><span>Room type</span></div><div class="chips">${[['Any','Any'],['S','Single'],['D','Double'],['T','Triple']].map(([v,l])=>chip(l,state.type===v,`state.type='${v}';draw()`)).join('')}${chip('Self-contained',state.self,'state.self=!state.self;draw()')}${chip('Girls\' hostels',state.girls,'state.girls=!state.girls;draw()')}</div>
+ <div class="lbl"><span>Maximum price per semester</span><b>${fmt(state.max)}</b></div><input type="range" min="400000" max="2600000" step="50000" value="${state.max}" oninput="state.max=+this.value;draw(true)">
+ <div class="count"><span>${L.length} of ${H.length} hostels</span><select onchange="state.sort=this.value;draw()"><option value="price" ${state.sort==='price'?'selected':''}>Lowest price first</option><option value="name" ${state.sort==='name'?'selected':''}>Name A to Z</option></select></div>
+ ${L.length?L.map(card).join(''):'<div class="empty">No hostels match. Try a higher price or fewer filters.</div>'}
+ <div class="foot">Source: ${esc(SRC)}. Prices are per semester as written in that list.</div>`}
+function mk(n){return `<span class="mk">C${n}</span>`}
+function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),3200)}
+function legend(){return `<div class="legend"><span>Version 2 revisions: orange markers C1 to C5</span><label><input type="checkbox" ${state.mk?'checked':''} onchange="state.mk=this.checked;document.getElementById('app').classList.toggle('showmk',state.mk)"> show</label></div>`}
+function detail(){const h=H.find(x=>x.n===state.open);const c=state.mgr.conf[h.n];const sh=state.cmp.includes(h.n);
+ const cheap=h.rooms.reduce((a,r,i)=>Math.min(...r[3])<Math.min(...h.rooms[a][3])?i:a,0);const ri=state.room[h.n]??cheap;const r=h.rooms[ri];
+ const q=encodeURIComponent(h.name+' hostel '+(h.area==='Not stated'?'':h.area+' ')+'Kampala');
+ const ct=h.tel.length?h.tel.map(n=>{const w=wa(n);return `<div class="box" style="margin:6px 0"><b>${esc(n)}</b><div class="actions">${w?`<a class="btn p" target="_blank" rel="noopener" href="https://wa.me/${w}?text=${encodeURIComponent('Hello, I found '+h.name+' on HostelFind. Is a room still available, and what is the total first payment?')}">Chat with manager on WhatsApp</a>`:''}${/^0\d{9}$/.test(n)?`<a class="btn o" href="tel:${n}">Call manager</a>`:'<span class="small">Number may be incorrect in the source.</span>'}</div></div>`}).join(''):'<div class="small">No contact is given in the source list.</div>';
+ return `<button class="back" onclick="state.open=null;draw()">‹ Back to results</button><h2>${esc(h.name)}</h2><div class="meta">${esc(h.area)} · Listing details</div>${legend()}
+ <div class="lbl"><span>Photos: room, bathroom, entrance ${mk(1)}</span></div>
+ <div class="gal"><div class="g1">Photo 1: the room<br>(added after a team visit)</div><div>Photo 2: bathroom</div><div>Photo 3: entrance</div><div>Photo 4: other</div></div>
+ <div class="box"><b>Verification</b>${mk(3)}<div class="tags" style="margin-top:6px"><span class="tag warn">Not verified yet: no team visit recorded</span><span class="tag">Photos match room: after a visit</span></div>
+ <div style="font-size:13px;margin-top:6px">Verified: team visit on <b>[date]</b></div><button class="rl" onclick="report(${h.n})">Report wrong information</button>${c?'<div class="tags"><span class="tag ok">Vacancy confirmed today (demo)</span></div>':''}</div>
+ <div class="box"><b>Price breakdown (per semester)</b>${mk(2)}
+ <select style="width:100%;margin:8px 0" onchange="state.room[${h.n}]=+this.value;draw()">${h.rooms.map((x,i)=>`<option value="${i}" ${i===ri?'selected':''}>${esc(x[0])}</option>`).join('')}</select>
+ <table><tr><th>Item</th><th>UGX</th></tr><tr><td>Rent</td><td>${r[3].map(p=>p.toLocaleString('en-US')).join(' / ')}</td></tr><tr><td>Deposit</td><td>[to confirm]</td></tr><tr><td>Water + electricity</td><td>[not in source list]</td></tr><tr><td>Other charges</td><td>[not in source list]</td></tr><tr><td><b>First payment</b></td><td><b>[total: to confirm]</b></td></tr></table>
+ <p class="small">Rent comes from the 24 July 2024 list. Ask the manager for the other lines in writing. Bracketed items are left open on purpose.</p>${h.note?`<p class="small"><b>Note:</b> ${esc(h.note)}</p>`:''}</div>
+ <div class="box"><b>Exact location</b>${mk(1)}<div style="font-size:14px;margin-top:4px">${esc(h.area)}, <b>[landmark: added after a visit]</b></div></div>
+ <div class="lbl"><span>Directions and contact ${mk(4)}</span></div>
+ <div class="actions"><a class="btn a" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${q}">Get directions (opens map)</a></div>${ct}
+ <div class="actions" style="margin-top:10px"><button class="btn o" onclick="tog(${h.n})">${sh?'Remove from compare':'Add to compare'}</button></div>
+ <p class="foot">Source: ${esc(SRC)}. Last verified by HostelFind: not yet. The map search uses the hostel name and may not find the exact spot.</p>`}
+function report(n){const h=H.find(x=>x.n===n);const t=prompt('What is wrong or missing about '+h.name+'? (Demo: nothing is sent)');if(t)toast('Thanks. In the real product this goes to our issue log and is checked within 24 hours.')}
+function compare(){const L=state.cmp.map(n=>H.find(h=>h.n===n));if(!L.length)return `<h2>Compare</h2><div class="empty">Pick up to 3 hostels from Search and tap Compare.</div>`;
+ const row=(l,f)=>`<tr><th>${l}</th>${L.map(h=>`<td>${f(h)}</td>`).join('')}</tr>`;
+ const lo=t=>h=>{const m=minOf(h,t);return m?fmt(m):'Not listed'};
+ return `<h2>Compare (${L.length} of 3)</h2><div style="overflow-x:auto"><table><tr><th></th>${L.map(h=>`<th>${esc(h.name)}</th>`).join('')}</tr>
+ ${row('Area',h=>esc(h.area))}${row('Cheapest overall',h=>fmt(h.min))}${row('Single from',lo('S'))}${row('Double from',lo('D'))}${row('Triple from',lo('T'))}
+ ${row('Self-contained option',h=>h.hasSelf?'Yes':'Not stated')}${row('Girls\' hostel',h=>h.girls?'Yes':'No')}${row('Verified by HostelFind',h=>'Not yet')}
+ ${row('Contact',h=>h.tel.length?esc(h.tel[0]):'None listed')}${row('',h=>`<a class="btn p" href="#" onclick="show(${h.n});return false">Open</a><a class="btn o" style="margin-top:6px" href="#" onclick="tog(${h.n});return false">Remove</a>`)}</table></div>
+ <p class="foot">Prices are the lowest listed per semester. Totals, deposits and extra fees are not in the source list.</p>`}
+function manager(){const h=H.find(x=>x.n===state.mgr.sel);const c=state.mgr.conf[h.n];const types=[...new Set(h.rooms.map(r=>r[1]))];const ed=state.mgr.edit;
+ const ptxt=t=>{const p=h.rooms.filter(r=>r[1]===t).flatMap(r=>r[3]);return Math.min(...p).toLocaleString('en-US')};
+ return `<h2>Manager: update availability</h2><p class="small">Demo of how a manager keeps listings fresh. Changes stay in this browser tab only and nothing is saved or sent.</p>${legend()}
+ <select style="width:100%;margin:8px 0" onchange="state.mgr.sel=+this.value;state.mgr.edit=false;draw()">${H.map(x=>`<option value="${x.n}" ${x.n===h.n?'selected':''}>${esc(x.name)}</option>`).join('')}</select>
+ <div class="box"><table><tr><th>Room type</th><th>Price (UGX)</th><th>Vacant</th></tr>${types.map(t=>{const k=h.n+t,v=state.mgr[k]??0,pk='p'+k,pv=state.mgr[pk]??ptxt(t);return `<tr><td>${t==='O'?'Other':TN[t]}</td><td>${ed?`<input class="num" value="${pv}" oninput="state.mgr['${pk}']=this.value">`:pv}</td><td>${ed?`<span style="display:flex;gap:6px;align-items:center"><button class="rl" style="text-decoration:none;font-size:20px" onclick="state.mgr['${k}']=Math.max(0,${v}-1);draw()">−</button><b>${v}</b><button class="rl" style="text-decoration:none;font-size:20px" onclick="state.mgr['${k}']=${v}+1;draw()">+</button></span>`:v}</td></tr>`}).join('')}</table>
+ <div class="small" style="margin-top:8px">${c?'Last confirmed: '+esc(c)+'.':'Last confirmed: not yet.'} Students see this date on your listing.</div></div>
+ <div class="actions"><button class="btn p" onclick="state.mgr.conf[${h.n}]=new Date().toLocaleString();draw();toast('Confirmed. The listing now shows today as the confirmed date.')">Nothing changed? Confirm all rooms ${mk(5)}</button></div>
+ <div class="actions" style="margin-top:8px"><button class="btn o" onclick="state.mgr.edit=!state.mgr.edit;draw()">${ed?'Done updating':'Update a room (count or price)'}</button></div>
+ <div class="box"><div class="sw"><span>Weekly WhatsApp reminder to confirm ${mk(5)}</span><input type="checkbox" checked style="width:22px;height:22px;accent-color:#1F6B3A" onchange="toast(this.checked?'Weekly reminder on (demo).':'Weekly reminder off (demo).')"></div></div>
+ <div class="actions"><button class="btn o" onclick="toast('Demo only: photo and facility editing would open here.')">Edit photos and facilities</button></div>`}
+function draw(keep){const m=document.getElementById('main');const f=keep&&document.activeElement&&document.activeElement.classList.contains('search')?document.activeElement.selectionStart:null;
+ m.innerHTML=state.tab==='search'?(state.open!==null?detail():search()):state.tab==='compare'?compare():manager();
+ document.getElementById('cc').textContent=state.cmp.length;['search','compare','manager'].forEach(t=>document.getElementById('t-'+t).classList.toggle('on',state.tab===t));
+ if(f!==null){const s=m.querySelector('.search');s.focus();s.setSelectionRange(f,f)}}
+function go(t){state.tab=t;if(t==='search')state.open=null;draw();window.scrollTo(0,0)}
+function show(n){state.open=n;state.tab='search';draw();window.scrollTo(0,0)}
+function tog(n){const i=state.cmp.indexOf(n);if(i>=0)state.cmp.splice(i,1);else if(state.cmp.length<3)state.cmp.push(n);else alert('You can compare up to 3 hostels.');draw()}
+draw();
+</script></body></html>
